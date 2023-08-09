@@ -341,7 +341,7 @@ class DiscordBot:
         """FIN GESTION TOURNOI"""
 
 
-        bot.run("MTA5MTA2MTM3NDQ2NzE4NjczOA.GWGjMn.Zz1esY9Vcw2axYlJWoEjUlBajFa3bIosASrc4k")
+        bot.run("")
 
 
     #Fonction d'affichage de Participant
