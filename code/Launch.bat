@@ -1,5 +1,5 @@
 @echo off
-set "chemin_fichier=CHEMIN JUSQU AU FICHIER"
+set "chemin_fichier=C:\Users\naina\OneDrive\Images\nainaincam 2023\Bot\Pairing_Discord\code\main.py"
 
 :menu
 cls
@@ -9,7 +9,7 @@ echo 3. Quitter
 set /p choix="Choisissez une option : "
 
 if "%choix%"=="1" (
-    python "%chemin_fichier%"
+    py "%chemin_fichier%"
     pause
     goto menu
 ) else if "%choix%"=="2" (

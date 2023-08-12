@@ -381,8 +381,8 @@ class DiscordBot:
         for table in tables:
             J1 = table.participants[0].pseudo
             J2 = table.participants[1].pseudo
-            if table.victorieux == 0 or table.victorieux == 1:
-                if table.victorieux == 0:
+            if table.win == 0 or table.win == 1:
+                if table.win == 0:
                     J2 = "~~" + J2 + "~~"
                 else:
                     J1 = "~~" + J1 + "~~"
