@@ -19,6 +19,7 @@ class DiscordBot:
             "commande-bot": 1092116723722891354,
             "pairing": 1019536748969214013,
             "résultat": 1019536789901410325,
+            "admin": 1138469514707750912,
         }
         self.FORUMS = {
             "test-command-forum": 1100036071913443448
@@ -328,7 +329,7 @@ class DiscordBot:
                 return
             info = self.controller.endRonde()
             if type(info) == str:
-                await ctx.send(f"Le tournoi est terminé !\nLE vainqueur est {info} !!\nFÉLICITATION !!")
+                await ctx.send(f"Le tournoi est terminé !\nLe vainqueur est {info} !!\nFÉLICITATION !!")
             else: 
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
             await self.printClassement(ctx, self.controller.getParticipants())
@@ -340,6 +341,17 @@ class DiscordBot:
             await clr(ctx, 0, True)
             await self.printClassement(ctx, self.controller.getParticipants)
 
+        #Fin du tournoi
+        @bot.command()
+        @commands.check(check_channel)
+        async def endTournoi(ctx):
+            await clr(ctx, 0, True)
+            if not ctx.author.guild_permissions.manage_messages:
+                print(f"{ctx.author} n'est pas permis de terminer le tournoi")
+                return
+            self.controller.resetTournoi()
+            await ctx.send("Le tournoi prend fin !")
+        
         """FIN GESTION TOURNOI"""
 
 

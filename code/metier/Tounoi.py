@@ -136,6 +136,19 @@ class Tournoi:
     def allFinishedTable(self):
         ronde = self.rondes[self.roundNumber - 1]
         return ronde.allFinishedTable()
+    
+    #Reset le tournoi
+    def resetTournoi(self):
+        self.started = False
+        self.roundNumber = 0
+        for participant in self.participants:
+            participant.win = 0
+            participant.draw = 0
+            participant.lose = 0
+            participant.bye = 0
+            participant.points = 0
+            participant.tieBreaker = 0
+            participant.adversaires = []
     """FIN DEROULEMENT TOURNOI"""
 
 
@@ -167,10 +180,9 @@ class Tournoi:
         self.triParticipants()
         endedTournoi = self.verifEndTournoi()
         if endedTournoi:
-            self.started = False
-            self.roundNumber = 0
             return self.participants[0].pseudo
-        return self.nbRound - self.roundNumber
+        else:
+            return self.nbRound - self.roundNumber
 
     #Calcul de win Rate   
     def winRateCalcul(self, player):

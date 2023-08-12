@@ -55,4 +55,8 @@ class Controller:
     #Si les tables ont fini de jouer
     def isAllFinishedTable(self):
         return self.tournoi.allFinishedTable()
+    
+    #Reset du tournoi
+    def resetTournoi(self):
+        self.tournoi.resetTournoi()
     """FIN CONTROLE TOURNOI"""
