@@ -12,6 +12,8 @@ class DiscordBot:
         intents = discord.Intents.default()
         intents.message_content = True
         bot = commands.Bot(command_prefix = "!", description = "Bot pairing DBS", intents=intents)
+        self.token1 = "MTA5MTA2MTM3NDQ2NzE4NjczOA."
+        self.token2 = "G6xpEi.CY7tET_YIflWXkFkc37CJQmcsaaBPthpfZpyQ8"
         #Channels autorisé
         self.CHANNELS = {
             "commande-bot": 1092116723722891354,
@@ -341,7 +343,7 @@ class DiscordBot:
         """FIN GESTION TOURNOI"""
 
 
-        bot.run("")
+        bot.run(self.token1 + self.token2)
 
 
     #Fonction d'affichage de Participant

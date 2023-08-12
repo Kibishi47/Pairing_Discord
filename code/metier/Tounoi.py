@@ -169,7 +169,8 @@ class Tournoi:
         if endedTournoi:
             self.started = False
             self.roundNumber = 0
-        return endedTournoi
+            return self.participants[0].pseudo
+        return self.nbRound - self.roundNumber
 
     #Calcul de win Rate   
     def winRateCalcul(self, player):
@@ -178,7 +179,7 @@ class Tournoi:
     #Verification de fin de partie
     def verifEndTournoi(self):
         if self.nbRound == self.roundNumber or not self.participants[0].points == self.participants[1].points:
-            return self.participants[0].pseudo
-        return self.nbRound - self.roundNumber
+            return True
+        return False
     
     """FIN CALCULS"""
