@@ -240,6 +240,8 @@ class DiscordBot:
             self.controller.tournoi.name = arg
             await ctx.send(f"Le nom du tournoi est : {arg}")
         
+        #AJOUT D'UN PING
+        
         #Defaut
         @bot.command()
         @commands.check(check_channel)
@@ -272,7 +274,7 @@ class DiscordBot:
         async def startRonde(ctx):
             await clr(ctx, 0, True)
             if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis d'attribuer un nom au tournoi")
+                print(f"{ctx.author} n'est pas permis de démarrer une ronde")
                 return
             if not self.controller.isStarted():
                 await ctx.send("Le tournoi n'a pas encore commencé !")
@@ -298,7 +300,6 @@ class DiscordBot:
         @bot.command()
         @commands.check(check_channel)
         async def table(ctx, number=0, *, pseudo=""):
-            await clr(ctx, 0, True)
             if len(pseudo) == 0:
                 await ctx.send("Veuillez donner les informations du match")
                 return
@@ -312,9 +313,9 @@ class DiscordBot:
             elif info == "set-draw":
                 await ctx.send(f"Il y a eu égalité à la table {number}")
             elif info == "set-winner":
-                await ctx.send(f"Le vainqueur est : {pseudo} !")
+                await ctx.send(f"{pseudo} est le vainqueur de la table {number} !")
             elif info == "change":
-                await ctx.send(f"Modification du vainqueur\nLe vainqueur est : {pseudo} !")
+                await ctx.send(f"Modification du vainqueur\n{pseudo} est le vainqueur de la table {number} !")
 
         #Fin de round
         @bot.command()
@@ -341,6 +342,24 @@ class DiscordBot:
             await clr(ctx, 0, True)
             await self.printClassement(ctx, self.controller.getParticipants)
 
+        #Définir un drop de joueur
+        @bot.command()
+        @commands.check(check_channel)
+        async def drop(ctx, pseudo = ""):
+            if not self.controller.isStartedRonde():
+                await ctx.send("La ronde est toujours en cours !")
+                return
+            if len(pseudo) == 0:
+                await ctx.send("Veuillez renseigner un joueur !")
+                return
+            pseudo = pseudo.strip()
+            participant = self.controller.searchParticipant(pseudo)
+            if participant == None:
+                await ctx.send(f"Aucun joueur ne possède le pseudo '{pseudo}'")
+            else:
+                self.dropPlayer(ctx, participant)
+                await ctx.send(f"{pseudo} a drop ce tournoi !")
+        
         #Fin du tournoi
         @bot.command()
         @commands.check(check_channel)

@@ -43,7 +43,7 @@ class Tournoi:
         random.shuffle(self.participants)
         self.nbRound, self.top = self.calculNbRound(len(self.participants))
         self.started = False if self.nbRound == None else True
-        del self.rondes[:]
+        self.resetTournoi()
         return self.nbRound, self.top
     
     #Nouveau Round
@@ -57,7 +57,7 @@ class Tournoi:
         for i in range(0, len(self.participants), 2):
             firstParticipant = self.participants[i]
             if i + 1 >= len(self.participants):
-                secondParticipant = Participant("BYE")
+                secondParticipant = Participant(True)
                 win = 0
                 finished = True
             else: 
@@ -137,15 +137,24 @@ class Tournoi:
         ronde = self.rondes[self.roundNumber - 1]
         return ronde.allFinishedTable()
     
+    def dropPlayer(self, participant):
+        participant.drop = True
+    
     #Reset le tournoi
     def resetTournoi(self):
+        self.name = ""
         self.started = False
+        self.startedRonde = False
+        del self.rondes[:]
         self.roundNumber = 0
+        self.nbRound = 0
+        self.top = 0
         for participant in self.participants:
             participant.win = 0
             participant.draw = 0
             participant.lose = 0
             participant.bye = 0
+            participant.drop = False
             participant.points = 0
             participant.tieBreaker = 0
             participant.adversaires = []

@@ -56,6 +56,10 @@ class Controller:
     def isAllFinishedTable(self):
         return self.tournoi.allFinishedTable()
     
+    #Drop de joueur
+    def dropPlayer(self, participant):
+        self.tournoi.dropPlayer(participant)
+    
     #Reset du tournoi
     def resetTournoi(self):
         self.tournoi.resetTournoi()
