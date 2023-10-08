@@ -5,7 +5,7 @@ class Regle:
         self.lose = 0
         self.bye = 3
         self.rulesRound = [
-            {"minJoueur": 4, "maxJoueur": 8, "nbRound": 3, "top": None},
+            {"minJoueur": 4, "maxJoueur": 8, "nbRound": 3, "top": 0},
             {"minJoueur": 9, "maxJoueur": 16, "nbRound": 4, "top": 2},
             {"minJoueur": 17, "maxJoueur": 32, "nbRound": 5, "top": 4},
             {"minJoueur": 33, "maxJoueur": 64, "nbRound": 6, "top": 8},

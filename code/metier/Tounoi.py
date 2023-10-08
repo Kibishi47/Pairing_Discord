@@ -42,7 +42,7 @@ class Tournoi:
     def startTournoi(self):
         random.shuffle(self.participants)
         self.nbRound, self.top = self.calculNbRound(len(self.participants))
-        self.started = False if self.nbRound == None else True
+        self.started = False if self.nbRound == None  else True
         self.resetTournoi()
         return self.nbRound, self.top
     
@@ -143,12 +143,9 @@ class Tournoi:
     #Reset le tournoi
     def resetTournoi(self):
         self.name = ""
-        self.started = False
         self.startedRonde = False
         del self.rondes[:]
         self.roundNumber = 0
-        self.nbRound = 0
-        self.top = 0
         for participant in self.participants:
             participant.win = 0
             participant.draw = 0

@@ -263,7 +263,7 @@ class DiscordBot:
                 await ctx.send("Le tournoi a déjà commencé !")
                 return
             nbRound, top = self.controller.startTournoi()
-            if nbRound != None:
+            if nbRound != None and nbRound != 0:
                 await ctx.send(f"Le tournoi commence !\n- Nombre de round : {nbRound}\n- Top : {'Aucun' if top == None else top}")
                 return
             await ctx.send("Le tournoi ne peut pas commencer.\nIl y a une erreur")
@@ -331,6 +331,7 @@ class DiscordBot:
             info = self.controller.endRonde()
             if type(info) == str:
                 await ctx.send(f"Le tournoi est terminé !\nLe vainqueur est {info} !!\nFÉLICITATION !!")
+                await self.printClassement(ctx, self.controller.getParticipants())
             else: 
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
             await self.printClassement(ctx, self.controller.getParticipants())
