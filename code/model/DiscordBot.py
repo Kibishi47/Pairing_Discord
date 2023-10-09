@@ -334,7 +334,6 @@ class DiscordBot:
                 await self.printClassement(ctx, self.controller.getParticipants())
             else: 
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
-            await self.printClassement(ctx, self.controller.getParticipants())
         
         #Affichage du classement
         @bot.command()
