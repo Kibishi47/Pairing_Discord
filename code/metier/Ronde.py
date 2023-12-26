@@ -7,7 +7,9 @@ class Ronde:
         self.tables = []
     
     def newTable(self, firstParticipant, secondParticipant, win, finished):
-        self.tables.append(Table(len(self.tables) + 1, firstParticipant, secondParticipant, win, finished))
+        newTable = Table(len(self.tables) + 1, firstParticipant, secondParticipant, win, finished)
+        self.tables.append(newTable)
+        return newTable
 
     def allFinishedTable(self):
         if self.finishedTables == len(self.tables):

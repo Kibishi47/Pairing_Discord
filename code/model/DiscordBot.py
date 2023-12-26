@@ -314,6 +314,8 @@ class DiscordBot:
                 await ctx.send(f"Il y a eu égalité à la table {number}")
             elif info == "set-winner":
                 await ctx.send(f"{pseudo} est le vainqueur de la table {number} !")
+            elif info == "no-change":
+                await ctx.send(f"{pseudo} est déjà le vainqueur de la table {number} !")
             elif info == "change":
                 await ctx.send(f"Modification du vainqueur\n{pseudo} est le vainqueur de la table {number} !")
 
@@ -340,7 +342,7 @@ class DiscordBot:
         @commands.check(check_channel)
         async def classement(ctx):
             await clr(ctx, 0, True)
-            await self.printClassement(ctx, self.controller.getParticipants)
+            await self.printClassement(ctx, self.controller.getParticipants())
 
         #Définir un drop de joueur
         @bot.command()
@@ -456,6 +458,4 @@ class DiscordBot:
         #embed.add_field(name="TieBreaker", value='\n'.join(listTieBreaker), inline=True)
 
         embed.set_author(name = self.controller.tournoi.name)
-
-        print('\n'.join(listTieBreaker))
         await ctx.send(embed=embed)

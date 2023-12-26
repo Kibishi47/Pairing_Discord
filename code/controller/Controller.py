@@ -62,5 +62,5 @@ class Controller:
     
     #Reset du tournoi
     def resetTournoi(self):
-        self.tournoi.resetTournoi()
+        self.tournoi.resetTournoi(True)
     """FIN CONTROLE TOURNOI"""

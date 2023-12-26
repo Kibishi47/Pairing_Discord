@@ -22,3 +22,6 @@ class Participant:
 
     def get(self):
         return {"nom" : self.nom, "prenom": self.prenom, "pseudo": self.pseudo}
+    
+    def notInAdversaries(self, participant):
+        return participant not in self.adversaires
