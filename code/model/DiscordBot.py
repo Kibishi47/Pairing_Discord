@@ -248,7 +248,9 @@ class DiscordBot:
         async def default(ctx):
             await clr(ctx, 0, True)
             await defaultPlayers(ctx)
+            await ctx.send("msg temp")
             await startTournoi(ctx)
+            await ctx.send("msg temp")
             await startRonde(ctx)
         
         #Début du tournoi
@@ -340,9 +342,13 @@ class DiscordBot:
         #Affichage du classement
         @bot.command()
         @commands.check(check_channel)
-        async def classement(ctx):
+        async def classement(ctx, arg = None):
             await clr(ctx, 0, True)
-            await self.printClassement(ctx, self.controller.getParticipants())
+            if arg == None:
+                await self.printClassement(ctx, self.controller.getParticipants())
+            elif arg == "admin":
+                await self.printClassementAdmin(ctx, self.controller.getParticipants())
+
 
         #Définir un drop de joueur
         @bot.command()
@@ -456,6 +462,29 @@ class DiscordBot:
         embed.add_field(name="Joueur", value='\n'.join(listJoueur), inline=True)
         embed.add_field(name="Points", value='\n'.join(listPoints), inline=True)
         #embed.add_field(name="TieBreaker", value='\n'.join(listTieBreaker), inline=True)
+
+        embed.set_author(name = self.controller.tournoi.name)
+        await ctx.send(embed=embed)
+
+    #Fonction d'affichage du classement
+    async def printClassementAdmin(self, ctx, participants):
+        embed = discord.Embed(
+            title = "Classement",
+            color = 0xC7819E
+        )
+        listJoueur = []
+        listPoints = []
+        listTieBreaker = []
+
+        for i in range(0, len(participants), 1):
+            participant = participants[i]
+            listJoueur.append(participant.pseudo)
+            listPoints.append(str(participant.points))
+            listTieBreaker.append(str(participant.tieBreaker))
+
+        embed.add_field(name="Joueur", value='\n'.join(listJoueur), inline=True)
+        embed.add_field(name="Points", value='\n'.join(listPoints), inline=True)
+        embed.add_field(name="TieBreaker", value='\n'.join(listTieBreaker), inline=True)
 
         embed.set_author(name = self.controller.tournoi.name)
         await ctx.send(embed=embed)
