@@ -122,9 +122,11 @@ class DiscordBot:
             if self.controller.searchParticipant(participant.pseudo) != None:
                 await ctx.send("Ce participant existe déjà")
                 return
-            self.controller.newParticipant(participant)
-            await ctx.send("Participant ajouté !")
-            #await ctx.send(str(participant))
+            participantNumber = self.controller.newParticipant(participant)
+            str_number = ""
+            if participantNumber > 1:
+                str_number = f"({participantNumber} participants au tournoi)"
+            await ctx.send(f"Participant ajouté ! {str_number}")
             await self.printParticipant(ctx, [participant])
             
         #Voir les participants d'un tournoi
@@ -388,7 +390,7 @@ class DiscordBot:
     #Fonction d'affichage de Participant
     async def printParticipant(self, ctx, participants):
         embed = discord.Embed(
-            title="Participant" if len(participants) == 1 else "Participants",
+            title="Participant" if len(participants) == 1 else f"Participants ({len(participants)})",
             color=0xC7819E
         )
         listNom = []

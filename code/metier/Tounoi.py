@@ -18,6 +18,7 @@ class Tournoi:
     #Ajout d'un participant au tournoi
     def addParticipant(self, participant):
         self.participants.append(participant)
+        return len(self.participants)
 
     #Effacement d'un ou tous les participants
     def clearParticipants(self, pseudo):

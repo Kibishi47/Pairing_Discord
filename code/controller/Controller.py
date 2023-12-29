@@ -8,7 +8,7 @@ class Controller:
 
     """CONTROLE PARTICIPANT"""
     def newParticipant(self, participant):
-        self.tournoi.addParticipant(participant)
+        return self.tournoi.addParticipant(participant)
 
     def resetParticipant(self):
         self.tournoi.clearParticipant()
