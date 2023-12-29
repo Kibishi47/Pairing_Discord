@@ -73,6 +73,7 @@ class Tournoi:
                 secondParticipant = Participant(True)
                 win = 0
                 finished = True
+                ronde.finishedTables += 1
             else:
                 havePlayed = False
                 secondParticipant = participants[i + 1]
