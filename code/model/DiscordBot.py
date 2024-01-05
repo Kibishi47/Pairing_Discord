@@ -64,10 +64,10 @@ class DiscordBot:
             await clr(ctx, 0, True)
             description = "() : Optionnel // [] : Obligatoire\n"
             description += "\n**Gestion de Participants**"
-            description += "\n**add [nom:X] [prenom:X] [pseudo:X]**: Ajout d'un participant"
+            description += "\n**add [pseudo:X]**: Ajout d'un participant"
             description += "\n**seePlayer (pseudo)**: Affiche un ou tous les participants"
             description += "\n**deletePlayer (pseudo)**: Supprime un ou tous les participants"
-            description += "\n**modifyPlayer [pseudo] (nom:X) (prenom:X) (pseudo:X)**: Modifier les données d'un participant"
+            description += "\n**modifyPlayer [pseudo] [pseudo:X]**: Modifier les données d'un participant"
             description += "\n"
             description += "\n**Gestion du Tournoi**"
             description += "\n**name [nom du tournoi]**: Nomme le tournoi"
@@ -102,31 +102,29 @@ class DiscordBot:
             lists = [item.split(":") for item in arg.split(" ")]
             data = {key: value for key, value in lists}
             # Vérification des données
-            if len(data) != 3:
+            keys = ["pseudo"]
+            if len(data) != len(keys):
                 await ctx.send("Veuillez donner le bon nombre d'informations")
                 return
-            keys = ["nom", "prenom", "pseudo"]
             nbCorrectKey = 0
             for key in keys:
                 if key in data:
                     nbCorrectKey += 1
-            if nbCorrectKey != 3:
+            if nbCorrectKey != len(keys):
                 await ctx.send("Veuillez donner les bonnes informations")
                 return
             
             #Toutes les informations sont correctes
             participant = Participant()
-            participant.nom = data["nom"].strip()
-            participant.prenom = data["prenom"].strip()
             participant.pseudo = data["pseudo"].strip()
             if self.controller.searchParticipant(participant.pseudo) != None:
                 await ctx.send("Ce participant existe déjà")
                 return
-            participantNumber = self.controller.newParticipant(participant)
+            number_participants = self.controller.newParticipant(participant)
             str_number = ""
-            if participantNumber > 1:
-                str_number = f"({participantNumber} participants au tournoi)"
-            await ctx.send(f"Participant ajouté ! {str_number}")
+            if number_participants > 1:
+                str_number_participants = f"({number_participants} participants au tournoi)"
+            await ctx.send(f"Participant ajouté ! {str_number_participants}")
             await self.printParticipant(ctx, [participant])
             
         #Voir les participants d'un tournoi
@@ -208,24 +206,32 @@ class DiscordBot:
         async def defaultPlayers(ctx):
             await clr(ctx, 0, True)
             players = [
-                {"nom": "Moulin", "prenom": "Emmanuel", "pseudo": "Kibishi47"},
-                {"nom": "Blangis", "prenom": "Alain", "pseudo": "NainainTCG"},
-                {"nom": "Père", "prenom": "Bertrand", "pseudo": "Beryu"},
-                {"nom": "Vergne", "prenom": "Vivien", "pseudo": "Bull8"},
-                {"nom": "Rançon", "prenom": "Dylan", "pseudo": "Sombros"},
-                {"nom": "Ntone", "prenom": "Henri", "pseudo": "Mundo"},
-                {"nom": "Bussiere", "prenom": "Johann", "pseudo": "Jannoncias"},
-                {"nom": "Bitari", "prenom": "Riyad", "pseudo": "Ririflash"},
-                {"nom": "Kerkat", "prenom": "Mehdi", "pseudo": "MafiieuHell"},
-                {"nom": "Sayarh", "prenom": "Jo-Hakim", "pseudo": "Mahijok"},
+                {"pseudo": "Kibishi47"},
+                {"pseudo": "NainainTCG"},
+                {"pseudo": "Beryu"},
+                {"pseudo": "Bull8"},
+                {"pseudo": "Sombros"},
+                {"pseudo": "MafiieuHell"},
+                {"pseudo": "Wheenlock"},
+                {"pseudo": "Mundo"},
+                {"pseudo": "absolushot"},
+                {"pseudo": "sifdine"},
+                {"pseudo": "Jannoncias"},
+                {"pseudo": "Ririflash"},
+                {"pseudo": "Mahijok"},
+                {"pseudo": "william"},
+                {"pseudo": "lightside"},
+                {"pseudo": "Nyohoson"},
+                {"pseudo": "A2ot"},
+                {"pseudo": "Alex"},
+                {"pseudo": "Allen"},
+                {"pseudo": "argo"},
             ]
             for player in players:
                 participant = Participant()
-                participant.prenom = player["prenom"]
-                participant.nom = player["nom"]
                 participant.pseudo = player["pseudo"]
                 self.controller.newParticipant(participant)
-            await ctx.send("10 joueurs par défaut insérés : ")
+            await ctx.send("20 joueurs par défaut insérés : ")
             await self.printParticipant(ctx, self.controller.getParticipants())
         
         """FIN PARTICIPANT COMMAND"""
@@ -398,12 +404,8 @@ class DiscordBot:
         listPseudo = []
         
         for participant in participants:
-            listNom.append(participant.nom)
-            listPrenom.append(participant.prenom)
             listPseudo.append(participant.pseudo)
-        
-        embed.add_field(name="Nom", value='\n'.join(listNom), inline=True)
-        embed.add_field(name="Prénom", value='\n'.join(listPrenom), inline=True)
+            
         embed.add_field(name="Pseudo", value='\n'.join(listPseudo), inline=True)
         
         embed.set_author(name = self.controller.tournoi.name)
