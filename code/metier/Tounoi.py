@@ -151,7 +151,7 @@ class Tournoi:
         
         if table.finished and not table.draw:
             for participant in table.participants:
-                if participant.pseudo.upper() == pseudo.upper() and participant.win == 1:
+                if (participant.pseudo.upper() == pseudo.upper() and participant.win == 1) or table.bye == True:
                     return "no-change"
             self.changeWinner(table, pseudo)
             return "change"

@@ -4,6 +4,7 @@ class Table:
         self.finished = finished
         self.win = win
         self.draw = False
+        self.bye = finished
         self.participants = []
         self.participants.append(firstParticipant)
         self.participants.append(secondParticipant)

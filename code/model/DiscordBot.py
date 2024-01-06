@@ -97,31 +97,15 @@ class DiscordBot:
             if len(arg) == 0:
                 await ctx.send("Veuillez donner les informations du participant")
                 return
-            data = {}
-            # Utiliser une liste en compréhension pour diviser les arguments et les convertir en clés/valeurs
-            lists = [item.split(":") for item in arg.split(" ")]
-            data = {key: value for key, value in lists}
-            # Vérification des données
-            keys = ["pseudo"]
-            if len(data) != len(keys):
-                await ctx.send("Veuillez donner le bon nombre d'informations")
-                return
-            nbCorrectKey = 0
-            for key in keys:
-                if key in data:
-                    nbCorrectKey += 1
-            if nbCorrectKey != len(keys):
-                await ctx.send("Veuillez donner les bonnes informations")
-                return
             
             #Toutes les informations sont correctes
             participant = Participant()
-            participant.pseudo = data["pseudo"].strip()
+            participant.pseudo = arg.strip()
             if self.controller.searchParticipant(participant.pseudo) != None:
                 await ctx.send("Ce participant existe déjà")
                 return
             number_participants = self.controller.newParticipant(participant)
-            str_number = ""
+            str_number_participants = ""
             if number_participants > 1:
                 str_number_participants = f"({number_participants} participants au tournoi)"
             await ctx.send(f"Participant ajouté ! {str_number_participants}")
