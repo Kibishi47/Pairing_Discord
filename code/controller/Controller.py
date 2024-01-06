@@ -19,6 +19,9 @@ class Controller:
     def getParticipants(self):
         return self.tournoi.participants
     
+    def getSortedParticipants(self):
+        return self.tournoi.getParticipantsSortByTieBreaker()
+    
     def clearParticipants(self, pseudo):
         self.tournoi.clearParticipants(pseudo)
     

@@ -35,13 +35,15 @@ class Tournoi:
                 theParticipant = participant
         return theParticipant
     
-    def getParticipantsByPoint(self, participants, points):
+    def getParticipantsFilterByPoints(self, participants, points):
         validateParticipants = []
         for participant in participants:
             if participant.points == points:
                 validateParticipants.append(participant)
         return validateParticipants
 
+    def getParticipantsSortByTieBreaker(self):
+        return self.triParticipants("byTieBreaker")
     """FIN PARTICIPANT"""
 
 
@@ -62,7 +64,8 @@ class Tournoi:
         if self.roundNumber == 1:  # S'il s'agit du premier round
             random.shuffle(self.participants)
 
-        participants = self.adjustParticipant()
+        self.participants = self.adjustParticipant()
+        participants = self.filteredParticipantsByNonDrop()
 
         ronde = Ronde(self.roundNumber)
         for i in range(0, len(participants), 2):
@@ -73,18 +76,21 @@ class Tournoi:
             if i + 1 >= len(participants):
                 secondParticipant = Participant(True)
                 win = 0
-                finished = True
-                ronde.finishedTables += 1
             else:
                 havePlayed = False
                 secondParticipant = participants[i + 1]
                 if len(participants) > i + 2:
                     if self.havePlayed(firstParticipant, participants[i + 1]):
-                        if self.samePoints(firstParticipant, participants[i + 2]) or (not self.samePoints(firstParticipant, participants[i + 2]) and len(self.getParticipantsByPoint(participants, participants[i + 2].points)) % 2 == 1):
+                        if self.samePoints(firstParticipant, participants[i + 2]) or (not self.samePoints(firstParticipant, participants[i + 2]) and len(self.getParticipantsFilterByPoints(participants, participants[i + 2].points)) % 2 == 1):
                             havePlayed = True
                             secondParticipant = participants[i + 2]
                 win = None
-                finished = False
+            finished = False
+            if firstParticipant.drop == True or secondParticipant.drop == True:
+                finished = True
+
+            if finished == True:
+                ronde.finishedTables += 1
             
             firstParticipant.newAdv(secondParticipant)
             secondParticipant.newAdv(firstParticipant)
@@ -102,7 +108,7 @@ class Tournoi:
         listPoints.sort(reverse=True) # reverse=False : asc // reverse=True : desc
         participants = []
         for point in listPoints:
-            samePointParticipants = self.getParticipantsByPoint(self.participants, point)
+            samePointParticipants = self.getParticipantsFilterByPoints(self.participants, point)
             lengthParticipant = len(samePointParticipants)
             lengthFirstGroupe = lengthParticipant // 2 + (lengthParticipant % 2)
             lengthSecondGroupe = lengthParticipant // 2
@@ -117,7 +123,6 @@ class Tournoi:
             participants.extend(finalPointParticipants)
         return participants
 
-
     def havePlayed(self, participant1, participant2):
         return participant2 in participant1.adversaires or participant1 in participant2.adversaires
     
@@ -125,8 +130,17 @@ class Tournoi:
         return participant1.points == participant2.points
     
     #Retrie les joueurs selon leurs tieBreaker
-    def triParticipants(self):
-        return sorted(self.participants, key=lambda x: x.tieBreaker, reverse=True)
+    def triParticipants(self, filter):
+        if filter == "byPoints":
+            return sorted(self.participants, key=lambda x: x.points, reverse=True)
+        if filter == "byTieBreaker":
+            return sorted(self.participants, key=lambda x: x.tieBreaker, reverse=True)
+    
+    def triParticipantsByDrop(self):
+        return sorted(self.participants, key=lambda x: x.drop)
+    
+    def filteredParticipantsByNonDrop(self):
+        return [participant for participant in self.participants if not participant.drop]
     
     #Retourne une ronde
     def getRonde(self, rondeNumber):
@@ -253,7 +267,7 @@ class Tournoi:
     
     #Verification de fin de partie
     def verifEndTournoi(self):
-        self.participants = self.triParticipants()
+        self.participants = self.triParticipants("byPoints")
         if self.nbRound == self.roundNumber or not self.participants[0].points == self.participants[1].points:
             return True
         return False

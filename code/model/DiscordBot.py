@@ -209,7 +209,6 @@ class DiscordBot:
                 {"pseudo": "A2ot"},
                 {"pseudo": "Alex"},
                 {"pseudo": "Allen"},
-                {"pseudo": "argo"},
             ]
             for player in players:
                 participant = Participant()
@@ -327,7 +326,7 @@ class DiscordBot:
             info = self.controller.endRonde()
             if type(info) == str:
                 await ctx.send(f"Le tournoi est terminé !\nLe vainqueur est {info} !!\nFÉLICITATION !!")
-                await self.printClassement(ctx, self.controller.getParticipants())
+                await self.printClassement(ctx, self.controller.getSortedParticipants())
             else: 
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
         
@@ -337,16 +336,16 @@ class DiscordBot:
         async def classement(ctx, arg = None):
             await clr(ctx, 0, True)
             if arg == None:
-                await self.printClassement(ctx, self.controller.getParticipants())
+                await self.printClassement(ctx, self.controller.getSortedParticipants())
             elif arg == "admin":
-                await self.printClassementAdmin(ctx, self.controller.getParticipants())
+                await self.printClassementAdmin(ctx, self.controller.getSortedParticipants())
 
 
         #Définir un drop de joueur
         @bot.command()
         @commands.check(check_channel)
         async def drop(ctx, pseudo = ""):
-            if not self.controller.isStartedRonde():
+            if self.controller.isStartedRonde():
                 await ctx.send("La ronde est toujours en cours !")
                 return
             if len(pseudo) == 0:
@@ -357,7 +356,7 @@ class DiscordBot:
             if participant == None:
                 await ctx.send(f"Aucun joueur ne possède le pseudo '{pseudo}'")
             else:
-                self.dropPlayer(ctx, participant)
+                self.controller.dropPlayer(participant)
                 await ctx.send(f"{pseudo} a drop ce tournoi !")
         
         #Fin du tournoi
@@ -383,8 +382,6 @@ class DiscordBot:
             title="Participant" if len(participants) == 1 else f"Participants ({len(participants)})",
             color=0xC7819E
         )
-        listNom = []
-        listPrenom = []
         listPseudo = []
         
         for participant in participants:
