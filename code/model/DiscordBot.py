@@ -2,9 +2,7 @@ import discord
 from discord.ext import commands
 from metier.Participant import Participant
 from metier.Tounoi import Tournoi
-#import disnake
-#from disnake.ext import commands, tasks
-#import os, random
+import os
 
 class DiscordBot:
     def __init__(self, controller):
@@ -180,41 +178,54 @@ class DiscordBot:
         async def defaultPlayers(ctx):
             await clr(ctx, 0, True)
             players = [
-                # {"pseudo": "beryu"},
-                # {"pseudo": "nainain"},
-                # {"pseudo": "sombros"},
-                # {"pseudo": "kibishi"},
-                {"pseudo": "sfnicolas"},
-                {"pseudo": "Sylvain"},
-                {"pseudo": "jsaispaski"},
-                {"pseudo": "Argosax"},
+                {"pseudo": "kibishi47"},
                 {"pseudo": "Nainaintcg"},
-                {"pseudo": "Bull8"},
                 {"pseudo": "beryu"},
-                {"pseudo": "malhi"},
-                {"pseudo": "Menmasan"},
-                {"pseudo": "Alexxx"},
-                {"pseudo": "Groot"},
-                {"pseudo": "rydden"},
-                {"pseudo": "Rishin"},
-                {"pseudo": "Jordan"},
-                {"pseudo": "Jefdu59"},
-                {"pseudo": "william"},
-                {"pseudo": "Kiva"},
-                {"pseudo": "Gael"},
-                {"pseudo": "Alister"},
                 {"pseudo": "Sombros"},
-                {"pseudo": "majindelena"},
-                {"pseudo": "Lightside74"},
-                {"pseudo": "Willy"},
             ]
             for player in players:
                 participant = Participant()
                 participant.pseudo = player["pseudo"]
                 self.controller.newParticipant(participant)
-            await ctx.send("20 joueurs par défaut insérés : ")
+            await ctx.send(f"{len(players)} joueurs par défaut insérés : ")
             await self.printParticipant(ctx, self.controller.getParticipants())
         
+        #Charger les participants
+        @bot.command()
+        @commands.check(check_channel)
+        async def loadPlayers(ctx):
+            await clr(ctx, 0, True)
+            participantsSavedPath = "participantsSaved.txt"
+            with open(participantsSavedPath, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            players = []
+            for line in lines:
+                pseudo = line.strip()
+                if pseudo:
+                    players.append({"pseudo": pseudo})
+
+            for player in players:
+                participant = Participant()
+                participant.pseudo = player["pseudo"]
+                self.controller.newParticipant(participant)
+            await ctx.send(f"{len(players)} joueurs par défaut insérés : ")
+            await self.printParticipant(ctx, self.controller.getParticipants())
+        
+        #Save les participants
+        @bot.command()
+        @commands.check(check_channel)
+        async def savePlayers(ctx):
+            await clr(ctx, 0, True)
+            participants = self.controller.getParticipants()
+
+            participantsSavedPath = "participantsSaved.txt"
+            with open(participantsSavedPath, "w", encoding="utf-8") as file:
+                for participant in participants:
+                    file.write(participant.pseudo + "\n")
+
+            await ctx.send(f"{len(participants)} joueurs ont été sauvegardé : ")
+
         """FIN PARTICIPANT COMMAND"""
 
         """GESTION TOURNOI"""
