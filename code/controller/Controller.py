@@ -54,6 +54,9 @@ class Controller:
     #Fin de la ronde
     def endRonde(self):
         return self.tournoi.calculPoints()
+    
+    def goBackRonde(self):
+        self.tournoi.goBackRonde()
 
     #Si les tables ont fini de jouer
     def isAllFinishedTable(self):

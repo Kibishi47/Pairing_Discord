@@ -8,6 +8,8 @@ class Ronde:
     
     def newTable(self, firstParticipant, secondParticipant, win, finished):
         newTable = Table(len(self.tables) + 1, firstParticipant, secondParticipant, win, finished)
+        firstParticipant.newTable(newTable)
+        secondParticipant.newTable(newTable)
         self.tables.append(newTable)
         return newTable
 

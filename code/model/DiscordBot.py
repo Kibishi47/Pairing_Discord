@@ -168,17 +168,7 @@ class DiscordBot:
                 await ctx.send("Veuillez fournir les nouvelles informations du participant.")
                 return
 
-            data = {}
-            lists = [item.split(":") for item in arg.strip().split(" ")]
-            data = {key: value for key, value in lists}
-            
-            # Modifier les informations du participant
-            if "nom" in data:
-                participant.nom = data["nom"].strip()
-            if "prenom" in data:
-                participant.prenom = data["prenom"].strip()
-            if "pseudo" in data:
-                participant.pseudo = data["pseudo"].strip()
+            participant.pseudo = arg.strip()
 
             await ctx.send(f"Informations du participant '{pseudo}' modifiées.")
             #await ctx.send(str(participant))
@@ -190,25 +180,33 @@ class DiscordBot:
         async def defaultPlayers(ctx):
             await clr(ctx, 0, True)
             players = [
-                {"pseudo": "Kibishi47"},
-                {"pseudo": "NainainTCG"},
-                {"pseudo": "Beryu"},
-                {"pseudo": "Bull8"},
-                {"pseudo": "Sombros"},
-                {"pseudo": "MafiieuHell"},
-                {"pseudo": "Wheenlock"},
-                {"pseudo": "Mundo"},
-                {"pseudo": "absolushot"},
-                {"pseudo": "sifdine"},
-                {"pseudo": "Jannoncias"},
-                {"pseudo": "Ririflash"},
-                {"pseudo": "Mahijok"},
-                {"pseudo": "william"},
-                {"pseudo": "lightside"},
-                {"pseudo": "Nyohoson"},
-                {"pseudo": "A2ot"},
-                {"pseudo": "Alex"},
-                {"pseudo": "Allen"},
+                {"pseudo": "beryu"},
+                {"pseudo": "nainain"},
+                {"pseudo": "sombros"},
+                {"pseudo": "kibishi"},
+                # {"pseudo": "sfnicolas"},
+                # {"pseudo": "Sylvain"},
+                # {"pseudo": "jsaispaski"},
+                # {"pseudo": "Argosax"},
+                # {"pseudo": "Nainaintcg"},
+                # {"pseudo": "Bull8"},
+                # {"pseudo": "beryu"},
+                # {"pseudo": "malhi"},
+                # {"pseudo": "Menmasan"},
+                # {"pseudo": "Alexxx"},
+                # {"pseudo": "Groot"},
+                # {"pseudo": "rydden"},
+                # {"pseudo": "Rishin"},
+                # {"pseudo": "Jordan"},
+                # {"pseudo": "Jefdu59"},
+                # {"pseudo": "william"},
+                # {"pseudo": "Kiva"},
+                # {"pseudo": "Gael"},
+                # {"pseudo": "Alister"},
+                # {"pseudo": "Sombros"},
+                # {"pseudo": "majindelena"},
+                # {"pseudo": "Lightside74"},
+                # {"pseudo": "Willy"},
             ]
             for player in players:
                 participant = Participant()
@@ -330,6 +328,17 @@ class DiscordBot:
             else: 
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
         
+        @bot.command()
+        @commands.check(check_channel)
+        async def returnRonde(ctx):
+            await clr(ctx, 0, True)
+            if not ctx.author.guild_permissions.manage_messages:
+                print(f"{ctx.author} n'est pas permis de modifier la ronde en cours")
+                return
+            self.controller.goBackRonde()
+            await ctx.send("Retour à la ronde précédente")
+
+
         #Affichage du classement
         @bot.command()
         @commands.check(check_channel)

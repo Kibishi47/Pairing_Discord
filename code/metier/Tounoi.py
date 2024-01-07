@@ -50,7 +50,7 @@ class Tournoi:
     """DEROULEMENT TOURNOI"""
     #Début d'un tournoi (RESET)
     def startTournoi(self):
-        random.shuffle(self.participants)
+        # random.shuffle(self.participants)
         self.nbRound, self.top = self.calculNbRound(len(self.participants))
         self.started = False if self.nbRound == None  else True
         self.resetTournoi()
@@ -61,8 +61,8 @@ class Tournoi:
         havePlayed = False
         self.roundNumber = len(self.rondes) + 1
 
-        if self.roundNumber == 1:  # S'il s'agit du premier round
-            random.shuffle(self.participants)
+        # if self.roundNumber == 1:  # S'il s'agit du premier round
+            # random.shuffle(self.participants)
 
         self.participants = self.adjustParticipant()
         participants = self.filteredParticipantsByNonDrop()
@@ -152,6 +152,9 @@ class Tournoi:
             else:
                 return self.rondes[rondeNumber - 1]
     
+    def goBackRonde(self):
+        self.startedRonde = True
+
     #Définir le vainqueur
     def winner(self, tableNumber, pseudo):
         ronde = self.rondes[len(self.rondes) - 1]
@@ -164,18 +167,17 @@ class Tournoi:
             return "no-player"
         
         if table.finished and not table.draw:
-            for participant in table.participants:
-                if (participant.pseudo.upper() == pseudo.upper() and participant.win == 1) or table.bye == True:
+            for i in range(0, len(table.participants), 1):
+                participant = table.participants[i]
+                if (participant.pseudo.upper() == pseudo.upper() and table.win == i) or table.bye == True:
                     return "no-change"
-            self.changeWinner(table, pseudo)
+            self.changeWinner(table)
             return "change"
         
         table.finished = True
         ronde.finishedTables += 1
         if pseudo.upper() == "DRAW":
             table.draw = True
-            for participant in table.participants:
-                participant.draw += 1
             return "set-draw"
         else: 
             table.draw = False
@@ -184,23 +186,13 @@ class Tournoi:
             participant = table.participants[i]
             if participant.pseudo.upper() == pseudo.upper():
                 table.win = i
-                participant.win += 1
             else:
                 table.win = 1 if i == 0 else 0
-                participant.lose += 1
-        
         return "set-winner"
 
     #Changer le vainqueur
-    def changeWinner(self, table, pseudo):
+    def changeWinner(self, table):
         table.win = 1 if table.win == 0 else 0
-        for participant in table.participants:
-            if participant.pseudo.upper() == pseudo.upper():
-                participant.win += 1
-                participant.lose -= 1
-            else:
-                participant.lose += 1
-                participant.win -= 1
 
     #Si les tables ont fini de jouer
     def allFinishedTable(self):
@@ -247,6 +239,7 @@ class Tournoi:
         self.startedRonde = False
         regle = Regle()
         for participant in self.participants:
+            participant.defineStat()
             points = participant.win * regle.win + participant.draw * regle.draw + participant.lose * regle.lose + participant.bye * regle.bye
             firstStep = self.winRateCalcul(participant)
             secondStep = 0
