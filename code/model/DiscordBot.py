@@ -180,33 +180,33 @@ class DiscordBot:
         async def defaultPlayers(ctx):
             await clr(ctx, 0, True)
             players = [
-                {"pseudo": "beryu"},
-                {"pseudo": "nainain"},
-                {"pseudo": "sombros"},
-                {"pseudo": "kibishi"},
-                # {"pseudo": "sfnicolas"},
-                # {"pseudo": "Sylvain"},
-                # {"pseudo": "jsaispaski"},
-                # {"pseudo": "Argosax"},
-                # {"pseudo": "Nainaintcg"},
-                # {"pseudo": "Bull8"},
                 # {"pseudo": "beryu"},
-                # {"pseudo": "malhi"},
-                # {"pseudo": "Menmasan"},
-                # {"pseudo": "Alexxx"},
-                # {"pseudo": "Groot"},
-                # {"pseudo": "rydden"},
-                # {"pseudo": "Rishin"},
-                # {"pseudo": "Jordan"},
-                # {"pseudo": "Jefdu59"},
-                # {"pseudo": "william"},
-                # {"pseudo": "Kiva"},
-                # {"pseudo": "Gael"},
-                # {"pseudo": "Alister"},
-                # {"pseudo": "Sombros"},
-                # {"pseudo": "majindelena"},
-                # {"pseudo": "Lightside74"},
-                # {"pseudo": "Willy"},
+                # {"pseudo": "nainain"},
+                # {"pseudo": "sombros"},
+                # {"pseudo": "kibishi"},
+                {"pseudo": "sfnicolas"},
+                {"pseudo": "Sylvain"},
+                {"pseudo": "jsaispaski"},
+                {"pseudo": "Argosax"},
+                {"pseudo": "Nainaintcg"},
+                {"pseudo": "Bull8"},
+                {"pseudo": "beryu"},
+                {"pseudo": "malhi"},
+                {"pseudo": "Menmasan"},
+                {"pseudo": "Alexxx"},
+                {"pseudo": "Groot"},
+                {"pseudo": "rydden"},
+                {"pseudo": "Rishin"},
+                {"pseudo": "Jordan"},
+                {"pseudo": "Jefdu59"},
+                {"pseudo": "william"},
+                {"pseudo": "Kiva"},
+                {"pseudo": "Gael"},
+                {"pseudo": "Alister"},
+                {"pseudo": "Sombros"},
+                {"pseudo": "majindelena"},
+                {"pseudo": "Lightside74"},
+                {"pseudo": "Willy"},
             ]
             for player in players:
                 participant = Participant()
@@ -321,6 +321,8 @@ class DiscordBot:
             if not self.controller.isAllFinishedTable():
                 await ctx.send("Les tables n'ont pas fini de jouer !")
                 return
+            if not self.controller.isStartedRonde:
+                await ctx.send("Aucune ronde en cours !")
             info = self.controller.endRonde()
             if type(info) == str:
                 await ctx.send(f"Le tournoi est terminé !\nLe vainqueur est {info} !!\nFÉLICITATION !!")
