@@ -13,11 +13,16 @@ class DiscordBot:
         self.token1 = "MTA5MTA2MTM3NDQ2NzE4NjczOA."
         self.token2 = "G6xpEi.CY7tET_YIflWXkFkc37CJQmcsaaBPthpfZpyQ8"
         #Channels autorisé
-        self.CHANNELS = {
+        self.PLAYER_CHANNELS_NAME = [
+            "résultats"
+        ]
+        self.ADMIN_CHANNELS_NAME = [
+            "pairing",
+            "bot-settings"
+        ]
+        self.DEFAULT_CHANNELS = {
             "commande-bot": 1092116723722891354,
-            "pairing": 1019536748969214013,
-            "résultat": 1019536789901410325,
-            "admin": 1138469514707750912,
+            "bot-settings" : 1196006487944863764
         }
         self.FORUMS = {
             "test-command-forum": 1100036071913443448
@@ -28,7 +33,13 @@ class DiscordBot:
         async def on_ready():
             print("Ready !")
         
-        #Fonction de vérification de channel
+        #Fonctions de vérification
+        def check_player_channel(ctx):
+            return ctx.channel.name in self.PLAYER_CHANNELS_NAME or check_channel(ctx)
+        
+        def check_admin_channel(ctx):
+            return ctx.channel.name in self.ADMIN_CHANNELS_NAME or check_channel(ctx)
+
         def check_channel(ctx):
             if ctx.channel.type == discord.ChannelType.forum:
                 if ctx.channel.parent.id not in self.FORUMS.values():
@@ -36,11 +47,16 @@ class DiscordBot:
                     return False
             else :
                 if ctx.channel.type == discord.ChannelType.text:
-                    if ctx.channel.id not in self.CHANNELS.values():
+                    if ctx.channel.id not in self.DEFAULT_CHANNELS.values():
                         print(f"Channel incorrect")
                         return False
             return True
 
+        def check_user_role(ctx):
+            if not ctx.author.guild_permissions.manage_messages:
+                print(f"{ctx.author} n'a pas les permissions nécessaire")
+                return False
+            return True
 
         """BASIC COMMAND"""
         #Efface les messages
@@ -55,11 +71,18 @@ class DiscordBot:
             for message in messages:
                 await message.delete()
 
+        @bot.command()
+        async def channel(ctx):
+            await ctx.send(f"this channel name : {ctx.channel.name}")
+            # await ctx.send(f"other channel name : {bot.get_channel(1196007375505719366).name}")
+
         #Liste aux utilisateurs les commandes disponibles
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def command(ctx):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             description = "() : Optionnel // [] : Obligatoire\n"
             description += "\n**Gestion de Participants**"
             description += "\n**add [pseudo:X]**: Ajout d'un participant"
@@ -90,8 +113,10 @@ class DiscordBot:
         """PARTICIPANT COMMAND"""
         #Ajout de participants
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def add(ctx, *, arg=""):
+            if not check_user_role(ctx):
+                return
             if len(arg) == 0:
                 await ctx.send("Veuillez donner les informations du participant")
                 return
@@ -111,9 +136,11 @@ class DiscordBot:
             
         #Voir les participants d'un tournoi
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def seePlayer(ctx, *, pseudo=""):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             if len(pseudo) == 0:
                 participants = self.controller.getParticipants()
                 if len(participants) == 0:
@@ -132,10 +159,9 @@ class DiscordBot:
             
         #Clear les participants
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def deletePlayer(ctx, *, arg=""):
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis de supprimer un ou plusieurs participants")
+            if not check_user_role(ctx):
                 return
             if arg == "":
                 pseudo = None
@@ -151,8 +177,10 @@ class DiscordBot:
             
         #Modifier les informations d'un participant
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def modifyPlayer(ctx, pseudo="", *, arg=""):
+            if not check_user_role(ctx):
+                return
             if len(pseudo) == 0:
                 await ctx.send("Veuillez donner le pseudo du participant")
                 return
@@ -174,9 +202,11 @@ class DiscordBot:
         
         #Participant par défaut
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def defaultPlayers(ctx):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             players = [
                 {"pseudo": "kibishi47"},
                 {"pseudo": "Nainaintcg"},
@@ -192,9 +222,11 @@ class DiscordBot:
         
         #Charger les participants
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def loadPlayers(ctx):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             participantsSavedPath = "participantsSaved.txt"
             with open(participantsSavedPath, "r", encoding="utf-8") as file:
                 lines = file.readlines()
@@ -214,9 +246,11 @@ class DiscordBot:
         
         #Save les participants
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def savePlayers(ctx):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             participants = self.controller.getParticipants()
 
             participantsSavedPath = "participantsSaved.txt"
@@ -231,11 +265,10 @@ class DiscordBot:
         """GESTION TOURNOI"""
         #Set name
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def name(ctx, *, arg):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis d'attribuer un nom au tournoi")
+            if not check_user_role(ctx):
                 return
             self.controller.tournoi.name = arg
             await ctx.send(f"Le nom du tournoi est : {arg}")
@@ -244,8 +277,10 @@ class DiscordBot:
         
         #Defaut
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def default(ctx):
+            if not check_user_role(ctx):
+                return
             await clr(ctx, 0, True)
             await defaultPlayers(ctx)
             await ctx.send("msg temp")
@@ -255,11 +290,10 @@ class DiscordBot:
         
         #Début du tournoi
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def startTournoi(ctx):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis d'attribuer un nom au tournoi")
+            if not check_user_role(ctx):
                 return
             if self.controller.isStarted():
                 await ctx.send("Le tournoi a déjà commencé !")
@@ -272,11 +306,10 @@ class DiscordBot:
 
         #Début de la ronde
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def startRonde(ctx):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis de démarrer une ronde")
+            if not check_user_role(ctx):
                 return
             if not self.controller.isStarted():
                 await ctx.send("Le tournoi n'a pas encore commencé !")
@@ -289,7 +322,7 @@ class DiscordBot:
 
         #Affichage du pairing d'une certaine Ronde
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def pairing(ctx, number=0):
             await clr(ctx, 0, True)
             ronde = self.controller.getRonde(number)
@@ -300,7 +333,7 @@ class DiscordBot:
 
         #Définir le vainqueur
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_player_channel)
         async def table(ctx, number=0, *, pseudo=""):
             if len(pseudo) == 0:
                 await ctx.send("Veuillez donner les informations du match")
@@ -323,11 +356,10 @@ class DiscordBot:
 
         #Fin de round
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def endRonde(ctx):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis d'attribuer un nom au tournoi")
+            if not check_user_role(ctx):
                 return
             if not self.controller.isAllFinishedTable():
                 await ctx.send("Les tables n'ont pas fini de jouer !")
@@ -342,21 +374,21 @@ class DiscordBot:
                 await ctx.send(f"Il reste encore {info} ronde{'s' if info>1 else ''} !")
         
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def returnRonde(ctx):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis de modifier la ronde en cours")
+            if not check_user_role(ctx):
                 return
             self.controller.goBackRonde()
             await ctx.send("Retour à la ronde précédente")
 
-
         #Affichage du classement
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_player_channel)
         async def classement(ctx, arg = None):
             await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
             if arg == None:
                 await self.printClassement(ctx, self.controller.getSortedParticipants())
             elif arg == "admin":
@@ -365,8 +397,10 @@ class DiscordBot:
 
         #Définir un drop de joueur
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_player_channel)
         async def drop(ctx, pseudo = ""):
+            if not check_user_role(ctx):
+                return
             if self.controller.isStartedRonde():
                 await ctx.send("La ronde est toujours en cours !")
                 return
@@ -383,11 +417,10 @@ class DiscordBot:
         
         #Fin du tournoi
         @bot.command()
-        @commands.check(check_channel)
+        @commands.check(check_admin_channel)
         async def endTournoi(ctx):
             await clr(ctx, 0, True)
-            if not ctx.author.guild_permissions.manage_messages:
-                print(f"{ctx.author} n'est pas permis de terminer le tournoi")
+            if not check_user_role(ctx):
                 return
             self.controller.resetTournoi()
             await ctx.send("Le tournoi prend fin !")
