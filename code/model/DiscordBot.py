@@ -237,11 +237,18 @@ class DiscordBot:
                 if pseudo:
                     players.append({"pseudo": pseudo})
 
-            for player in players:
-                participant = Participant()
-                participant.pseudo = player["pseudo"]
-                self.controller.newParticipant(participant)
-            await ctx.send(f"{len(players)} joueurs par défaut insérés : ")
+            for i in range(len(players) - 1, -1, -1):
+                player = players[i]
+                participant = self.controller.searchParticipant(player["pseudo"])
+
+                if participant is None:
+                    participant = Participant()
+                    participant.pseudo = player["pseudo"]
+                    self.controller.newParticipant(participant)
+                else:
+                    del players[i]
+
+            await ctx.send(f"{len(players)} joueurs insérés : ")
             await self.printParticipant(ctx, self.controller.getParticipants())
         
         #Save les participants

@@ -9,7 +9,7 @@ class Participant:
         self.resetStat()
 
     def __str__(self):
-        return f"Participant(nom = {self.nom}, prenom = {self.prenom}, pseudo = {self.pseudo})"
+        return f"Participant(pseudo = {self.pseudo})"
     
     def newAdv(self, adversaire):
         if adversaire.drop:
