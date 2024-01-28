@@ -14,7 +14,10 @@ class DiscordBot:
         self.token2 = "G6xpEi.CY7tET_YIflWXkFkc37CJQmcsaaBPthpfZpyQ8"
         #Channels autorisé
         self.PLAYER_CHANNELS_NAME = [
-            "résultats"
+            "résultats",
+            "resultats",
+            "résultat",
+            "resultat",
         ]
         self.ADMIN_CHANNELS_NAME = [
             "pairing",
@@ -43,12 +46,12 @@ class DiscordBot:
         def check_channel(ctx):
             if ctx.channel.type == discord.ChannelType.forum:
                 if ctx.channel.parent.id not in self.FORUMS.values():
-                    print(f"Channel incorrect")
+                    print(f"Channel incorrect !\nChannel name : {ctx.channel.name}")
                     return False
             else :
                 if ctx.channel.type == discord.ChannelType.text:
                     if ctx.channel.id not in self.DEFAULT_CHANNELS.values():
-                        print(f"Channel incorrect")
+                        print(f"Channel incorrect !\nChannel name : {ctx.channel.name}")
                         return False
             return True
 
@@ -75,6 +78,29 @@ class DiscordBot:
         async def channel(ctx):
             await ctx.send(f"this channel name : {ctx.channel.name}")
             # await ctx.send(f"other channel name : {bot.get_channel(1196007375505719366).name}")
+
+        @bot.command()
+        async def execute(ctx):
+            await clr(ctx, 0, True)
+            if not check_user_role(ctx):
+                return
+            participantsSavedPath = "command.txt"
+            with open(participantsSavedPath, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+
+            command_messages = []
+            for line in lines:
+                message = line.strip()
+                if message:
+                    command_messages.append(message)
+            fake_message = ctx.message
+            for index, command_message in enumerate(command_messages):
+                if not command_message.startswith("/"):
+                    if index > 0 and not command_message.startswith("!table") and not command_message.startswith("!drop"):
+                        await ctx.send("msg temp")
+                    fake_message.content = command_message
+                    await bot.process_commands(fake_message)
+                
 
         #Liste aux utilisateurs les commandes disponibles
         @bot.command()

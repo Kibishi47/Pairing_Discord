@@ -1,0 +1,31 @@
+!loadPlayers
+!startTournoi
+!startRonde
+!table 1 Jefdu59
+!table 2 Jsaispaski
+!table 3 alexxx
+!table 4 Rishin
+!table 5 argosax
+!endRonde
+!startRonde
+!table 1 rishin
+!table 2 jsaispaski
+!table 3 alexxx
+!table 4 groot
+!table 5 alister
+!endRonde
+!startRonde
+!table 1 alexxx
+!table 2 jsaispaski
+!table 3 argosax
+!table 4 skylon
+!table 5 nainain
+!endRonde
+/!drop nainain
+/!drop bull8
+!startRonde
+/!table 1 alexxx
+/!table 2 alister
+/!table 3 argosax
+/!table 4 groot
+/!endRonde
