@@ -1,0 +1,48 @@
+h1 {
+	padding-top: 1em;
+}
+
+#content {
+    margin: 0 15px;
+}
+
+.tournament-info th {
+	padding-right: 3em;
+}
+.players-list td {
+	padding-right: 2em;
+}
+.players-list .fide_id, .players-list .rating {
+	text-align: right;
+}
+.players-list .name {
+	min-width: 20em;
+	font-weight: bold;
+}
+
+.games-list .name {
+	font-weight: bold;
+}
+
+.standings-table .score {
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+.player {
+	font-weight: bold;
+}
+.opponent {
+	font-size: 0.8em;
+	text-align: center;
+}
+
+.player-color-W {
+	background-color: white;
+	color: black;
+}
+
+.player-color-B {
+	background-color: black;
+	color: white;
+}

@@ -1,0 +1,61 @@
+{% extends "base_tournament.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Rounds' %} - {{ tournament.name }}{% endblock %}
+
+{% block content %}
+<h1>{% trans 'Rounds' %}</h1>
+
+{% if rounds_info %}
+	{% for round_info in rounds_info %}
+	<h2>{{ round_info.round.name }}, {{ round_info.round.round_date }}</h2>
+	<table class="games-list">
+		<tr>
+			<th>{% trans 'Rating' %}</th>
+			<th>{% trans 'Title' %}</th>
+			<th>{% trans 'Name' %}</th>
+			<th>{% trans 'Score' %}</th>
+			<th>{% trans 'Name' %}</th>
+			<th>{% trans 'Title' %}</th>
+			<th>{% trans 'Rating' %}</th>
+			<th>{% trans 'Status' %}</th>
+		</tr>
+	{% for game in round_info.games %}
+		  <tr>
+		  	{% if game.game.player_color == 'W' %}
+		  		<td>{{ game.player.rating }}</td>
+			    <td>{{ game.player.fide_title|slice:"2:" }}</td>
+			    <td class="name">{{ game.player }}</td>
+			    {% if game.game.status == 'planned' %}
+			    	<td class="score">-</td>
+			    {% else %}
+			    	<td class="score">{{ game.game.player_score }} : {{ game.game.opponent_score }}</td>
+			    {% endif %}
+			    <td class="name">{{ game.opponent }}</td>
+			    <td>{{ game.opponent.fide_title|slice:"2:" }}</td>
+			    <td>{{ game.opponent.rating }}</td>
+			    <td>{{ game.game.status|capfirst }}</td>
+		    {% else %}
+			    <td>{{ game.opponent.rating }}</td>
+			    <td>{{ game.opponent.fide_title|slice:"2:" }}</td>
+			    <td class="name">{{ game.opponent }}</td>
+			    {% if game.game.status == 'planned' %}
+			    	<td class="score">-</td>
+			    {% else %}
+			    	<td class="score">{{ game.game.opponent_score }} : {{ game.game.player_score }}</td>
+			    {% endif %}
+			    <td class="name">{{ game.player }}</td>
+			    <td>{{ game.player.fide_title|slice:"2:" }}</td>
+			    <td>{{ game.player.rating }}</td>
+			    <td>{{ game.game.status|capfirst }}</td>
+		    {% endif %}
+		  </tr>
+	{% endfor %}
+	</table>
+	
+	{% endfor %}
+{% else %}
+	<h2>{% trans 'No rounds have been setup.' %}</h2>
+{% endif %}
+
+{% endblock %}
